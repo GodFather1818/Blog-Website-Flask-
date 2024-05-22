@@ -1,0 +1,35 @@
+
+{% include "header.html" %}
+<div id="page1" class="main container my-5">
+    <h1>Welcome, {{ user.username }}!</h1>
+
+    <h2>Your Posts</h2>
+
+    <div class="row">
+        {% for post in user_posts %}
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm border-dark">
+                    <div class="card-header py-3 border-dark text-bg-dark">
+                        <h4 class="my-0 fw-normal">Post {{ loop.index }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">{{ post.postTitle }}</h1>
+                        <p>{{ post.content[1:100] + "..." }}</p>
+                        <a href="posts/{{post._id }}" class="btn btn-outline-primary">
+                            Read More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+    </div>
+    <div class="col-4 special-container">
+        <button id="special-button" style="margin: 5px 50%;" type="submit" class="btn btn-outline-primary" name="submission"><a href="/compose">Compose</a></button>
+    </div>
+
+</div>
+    
+{% include "footer.html" %}
+
+    <!-- Add any additional styling or content as needed -->

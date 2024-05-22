@@ -1,0 +1,36 @@
+{% include "header.html" %}
+<div id="page1" class="main container my-5">
+  <h1>Compose</h1>
+  <form action="/compose" method="post">
+    <div class="form-group">
+      <div class="mb-3 my-5">
+        <label for="title" class="form-label"><h2>Title</h2></label>
+        <div class="py-5">
+          <input
+            type="text"
+            name="postTitle"
+            class="form-control"
+            id="title"
+            aria-describedby="emailHelp"
+          />
+        </div>
+      </div>
+      <div class="mb-3 my-5">
+        <label for="content" class="form-label"><h2>Add Your Content</h2></label>
+        <div class="py-5">
+          <textarea style="margin-bottom: 50px;"
+            class="form-control"
+            name="content"
+            id="postTitle"
+            rows="5"
+            cols="40"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <button style="margin: 5px 50%;" type="submit" class="btn btn-outline-primary">Submit</button>
+  </form>
+</div>
+
+
+{% include "footer.html" %}

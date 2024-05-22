@@ -1,0 +1,57 @@
+{% include "header.html" %}
+<div id="page1">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' %}
+                    <div class="alert alert-success" role="alert" id="success-alert">
+                {% elif category == 'danger' %}
+                    <div class="alert alert-danger" role="alert" id="danger-alert">
+                {% else %}
+                    <div class="alert alert-info" role="alert" id="info-alert">
+                {% endif %}
+                        {{ message }}
+                    </div>
+            {% endfor %}
+            <script>
+                // Automatically close the alerts after 2000 milliseconds (2 seconds)
+                document.addEventListener("DOMContentLoaded", function() {
+                    var alerts = document.querySelectorAll('.alert');
+                    alerts.forEach(function(alert) {
+                        setTimeout(function() {
+                            alert.style.display = 'none';
+                        }, 2000);
+                    });
+                });
+            </script>
+        {% endif %}
+    {% endwith %}
+    <h2>Sign Up</h2>
+    <form method="POST" action="{{ url_for('signup') }}">
+        {{ form.hidden_tag() }}
+
+        <label for="username">Username:</label>
+        {{ form.username(class="form-control", placeholder="Enter your username") }}
+        {% for error in form.username.errors %}
+            <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+
+        <label for="password">Password:</label>
+        {{ form.password(class="form-control", placeholder="Enter your password") }}
+        {% for error in form.password.errors %}
+            <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+
+        <label for="confirm_password">Confirm Password:</label>
+        {{ form.confirm_password(class="form-control", placeholder="Confirm your password") }}
+        {% for error in form.confirm_password.errors %}
+            <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Log in here</a>.</p>
+</div>
+
+{% include "footer.html" %}
+
