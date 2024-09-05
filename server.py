@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, abort
-# from flask_pymongo import PyMongo
 from pymongo import MongoClient
 import os
 from bson import ObjectId
@@ -17,14 +16,13 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY')  
 
 client = MongoClient(os.environ.get('CONNECT'))
-db = client.pythonblogsDB  # Replace 'pythonblogsDB' with your actual database name
+db = client.pythonblogsDB  
 mongo = db.blog
 mongo_user = db.userData
 
 year  = datetime.date.today().year
 
 
-# MongoDB schema definition
 blog_schema = {
     "postTitle": {"type": str},
     "content": {"type": str},
@@ -46,7 +44,6 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField("Confirm Password", validators=[DataRequired(), EqualTo("password")])
     submit = SubmitField("Sign Up")
 
-# Define a simple form for user login
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
@@ -80,9 +77,7 @@ def login():
         if user and check_password_hash(user["password"], form.password.data):
             session["user_id"] = str(user["_id"])
             session["username"] = str(user["username"])
-             # Set a cookie for remembering the user
-            # username = session.get("username")
-            # print(username)
+             
             print(f"User_Id: {session['user_id']}, username: {session['username']}")
             response = redirect(url_for("posts"))
             response.set_cookie("user_id", str(user["_id"]))
@@ -136,31 +131,26 @@ def compose():
         return render_template("compose.html")
 
     return redirect(url_for("login"))
-    # return redirect(url_for("login"))
 
 
 @app.route("/posts/<postId>")
 def particular_post(postId):
     post = mongo.find_one({"_id": ObjectId(postId)})
     print(post)
-    # return render_template("particularPost.html", newPosts=post)
     return render_template("particularPost.html", newPost=post, current_year=year)
 
 @app.route("/posts")
 def posts():
-    # Check if the user is logged in
+  
     if "user_id" not in session:
-        abort(401)  # Unauthorized
+        abort(401)  
 
-    # Retrieve user information from the database
     user_id = session["user_id"]
     user = mongo_user.find_one({"_id": ObjectId(user_id)})
 
-    # Check if the user exists in the database
     if not user:
-        abort(401)  # Unauthorized
+        abort(401)  
 
-    # Now the user is authenticated. Proceeding Further
     posts = mongo.find({}).sort("date", -1)
     print(posts)
     return render_template("post.html", posts=posts, current_year=year, user=user)
@@ -169,7 +159,6 @@ def posts():
 @app.route("/", methods=["POST"])
 def redirect_to_compose():
     if "user_id" in session:
-        # User is logged in, redirect to the compose page
         return redirect(url_for("compose"))
 
     return redirect(url_for("login"))
@@ -177,8 +166,7 @@ def redirect_to_compose():
 @app.route("/compose", methods=["POST"])
 def create_post():
 
-    # user_id = session.get("user_id")
-    # username = session.get("username")
+    
     user_id = session['user_id']
     username = session['username']
     print(f"user_id: {user_id}\n username: {username}")
@@ -189,7 +177,7 @@ def create_post():
         "content": request.form.get("content"),
         "date":datetime.datetime.now(),
         "username": username,
-        # "password": generate_password_hash(session.get("passowrd")),
+       
         "user_id": user["_id"]
     }
     print(post)
@@ -207,7 +195,7 @@ def profile():
     user = mongo_user.find_one({"_id": ObjectId(user_id)})
 
     if not user:
-        abort(401)  # Unauthorized
+        abort(401) 
 
     user_posts = mongo.find({"user_id": user["_id"]}).sort("date", -1)
     
